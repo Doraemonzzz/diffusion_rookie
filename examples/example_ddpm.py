@@ -1,10 +1,18 @@
+from pathlib import Path
 import torch
+from torch.optim import Adam
 import torch.nn.functional as F
 import numpy as np
+
+
 from diffusion_rookie.schedulers import linear_beta_schedule, extract
 from torchvision.transforms import Compose, ToTensor, Lambda, ToPILImage, CenterCrop, Resize
 from diffusion_rookie.models import Unet
 from tqdm.auto import tqdm
+from torchvision.utils import save_image
+from torchvision import datasets
+from torchvision import transforms
+from torch.utils.data import DataLoader
 
 timesteps = 200
 
@@ -81,8 +89,6 @@ def p_losses(denoise_model, x_start, t, noise=None, loss_type="l1"):
 
     return loss
 
-# from datasets import load_dataset
-from torchvision import datasets
 
 # load dataset from the hub
 # dataset = load_dataset("fashion_mnist")
@@ -90,8 +96,7 @@ image_size = 28
 channels = 1
 batch_size = 128
 
-from torchvision import transforms
-from torch.utils.data import DataLoader
+
 
 # define image transformations (e.g. using torchvision)
 transform = Compose([
@@ -157,7 +162,7 @@ def p_sample_loop(model, shape):
 def sample(model, image_size, batch_size=16, channels=3):
     return p_sample_loop(model, shape=(batch_size, channels, image_size, image_size))
 
-from pathlib import Path
+
 
 def num_to_groups(num, divisor):
     groups = num // divisor
@@ -172,7 +177,7 @@ results_folder.mkdir(exist_ok = True)
 # save_and_sample_every = 1000
 save_and_sample_every = 100
 
-from torch.optim import Adam
+
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -185,7 +190,7 @@ model.to(device)
 
 optimizer = Adam(model.parameters(), lr=1e-3)
 
-from torchvision.utils import save_image
+
 
 epochs = 5
 
