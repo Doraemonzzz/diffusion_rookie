@@ -1,7 +1,7 @@
 import torch.nn as nn
-import torch.nn.functional as F
-from einops import rearrange
 import xformers.ops as xops
+from einops import rearrange
+
 
 class SimpleAttention(nn.Module):
     def __init__(self, dim, heads=4, dim_head=32):
@@ -20,5 +20,5 @@ class SimpleAttention(nn.Module):
         )
         out = xops.memory_efficient_attention(q, k, v)
         out = rearrange(out, "b (x y) h d -> b (h d) x y", x=h, y=w)
-        
+
         return self.to_out(out)

@@ -3,14 +3,15 @@ from einops import rearrange
 
 from diffusion_rookie.utils import exists
 
+
 class Block(nn.Module):
-    def __init__(self, dim, dim_out, groups = 8):
+    def __init__(self, dim, dim_out, groups=8):
         super().__init__()
-        self.proj = nn.Conv2d(dim, dim_out, 3, padding = 1)
+        self.proj = nn.Conv2d(dim, dim_out, 3, padding=1)
         self.norm = nn.GroupNorm(groups, dim_out)
         self.act = nn.SiLU()
 
-    def forward(self, x, scale_shift = None):
+    def forward(self, x, scale_shift=None):
         x = self.proj(x)
         x = self.norm(x)
 
@@ -20,10 +21,11 @@ class Block(nn.Module):
 
         x = self.act(x)
         return x
-    
+
+
 class ResnetBlock(nn.Module):
     """https://arxiv.org/abs/1512.03385"""
-    
+
     def __init__(self, dim, dim_out, *, time_emb_dim=None, groups=8):
         super().__init__()
         self.mlp = (
@@ -45,7 +47,8 @@ class ResnetBlock(nn.Module):
 
         h = self.block2(h)
         return h + self.res_conv(x)
-    
+
+
 class ConvNextBlock(nn.Module):
     """https://arxiv.org/abs/2201.03545"""
 

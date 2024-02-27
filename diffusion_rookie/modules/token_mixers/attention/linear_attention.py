@@ -1,10 +1,11 @@
-import torch.nn as nn
-import torch.nn.functional as F
 import torch
+import torch.nn as nn
 from einops import rearrange
+
 
 class EfficientAttention(nn.Module):
     """https://arxiv.org/abs/1812.01243"""
+
     def __init__(self, dim, heads=4, dim_head=32):
         super().__init__()
         self.scale = dim_head**-0.5
@@ -12,8 +13,7 @@ class EfficientAttention(nn.Module):
         hidden_dim = dim_head * heads
         self.to_qkv = nn.Conv2d(dim, hidden_dim * 3, 1, bias=False)
 
-        self.to_out = nn.Sequential(nn.Conv2d(hidden_dim, dim, 1), 
-                                    nn.GroupNorm(1, dim))
+        self.to_out = nn.Sequential(nn.Conv2d(hidden_dim, dim, 1), nn.GroupNorm(1, dim))
 
     def forward(self, x):
         b, c, h, w = x.shape

@@ -1,11 +1,12 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
 
-from diffusion_rookie.utils import default, partial, exists
 from diffusion_rookie.modules.blocks import ConvNextBlock, ResnetBlock
-from diffusion_rookie.modules.token_mixers import EfficientAttention, SimpleAttention
 from diffusion_rookie.modules.pes import SinusoidalPositionEmbeddings
-from diffusion_rookie.modules.utils import Residual, Downsample, Upsample, PreGroupNorm
+from diffusion_rookie.modules.token_mixers import EfficientAttention, SimpleAttention
+from diffusion_rookie.modules.utils import Downsample, PreGroupNorm, Residual, Upsample
+from diffusion_rookie.utils import default, exists, partial
+
 
 class Unet(nn.Module):
     def __init__(
@@ -30,7 +31,7 @@ class Unet(nn.Module):
 
         dims = [init_dim, *map(lambda m: dim * m, dim_mults)]
         in_out = list(zip(dims[:-1], dims[1:]))
-        
+
         if use_convnext:
             block_klass = partial(ConvNextBlock, mult=convnext_mult)
         else:
